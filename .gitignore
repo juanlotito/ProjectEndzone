@@ -1,0 +1,53 @@
+# Unity generated #
+Temp/
+Library/
+Builds/
+Obj/
+UnityGenerated/
+Assets/AssetStoreTools*
+
+# Visual Studio / MonoDevelop generated #
+ExportedObj/
+*.svd
+*.userprefs
+*.csproj
+*.pidb
+*.suo
+*.sln
+*.user
+*.unityproj
+*.booproj
+*.dll
+*.pdb
+*.mdb
+*.mpdb
+*.filelist
+*.orig
+
+# Gradle files #
+.gradle/
+build/
+
+# Mac files #
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Thumbnails #
+._*
+
+# Kite #
+.kite/
+
+# Android generated files #
+/*/build/
+/*/local.properties
+/*/proguard-rules.txt
+
+# iOS generated files #
+Pods/
+*.xcodeproj/
+*.xcworkspace/
+
+# Web player generated files #
+Build/*.unity3d
