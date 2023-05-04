@@ -24,7 +24,6 @@ public class FirstPersonController : MonoBehaviour
     private float yaw = 0.0f;
     private float pitch = 0.0f;
     private Image crosshairObject;
-    private bool isZoomed = false;
     #endregion
 
     #region Movement Variables
@@ -55,9 +54,10 @@ public class FirstPersonController : MonoBehaviour
 
     #region Melee Variables
     [SerializeField] private Transform originMelee;
-    private float meleeRange = 1f;
+    private float meleeRange = 3f;
     private float lastHitMelee = 0f;
     private float reloadTime = 2f;
+    private int meleeDamage = 50;
     #endregion
 
 
@@ -144,7 +144,7 @@ public class FirstPersonController : MonoBehaviour
         {
             Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
 
-            if (targetVelocity.x != 0 || targetVelocity.z != 0 && isGrounded)
+            if (targetVelocity.y != 0 || targetVelocity.x != 0 || targetVelocity.z != 0)
             {
                 isWalking = true;
 
@@ -263,6 +263,14 @@ public class FirstPersonController : MonoBehaviour
         if (Physics.Raycast(originMelee.position, originMelee.transform.forward, out hit, meleeRange))
         {
             Debug.Log("Pegue");
+            if(hit.collider.CompareTag("Zombie"))
+            {
+                ZombieController zombie = hit.collider.GetComponent<ZombieController>();
+                if (zombie != null)
+                {
+                    zombie.TakeDamage(meleeDamage);
+                }
+            }
         }
 
         yield return new WaitForSeconds(reloadTime);

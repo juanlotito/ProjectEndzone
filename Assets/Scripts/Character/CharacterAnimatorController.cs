@@ -24,7 +24,7 @@ public class CharacterAnimatorController : MonoBehaviour
         else animator.SetBool("IsHittingMelee", false);
     }
 
-    public void ZombiePatroll(bool isMoving)
+    public void ZombieWalk(bool isMoving)
     {
         if (isMoving) animator.SetBool("IsMoving", isMoving);
         else animator.SetBool("IsMoving", isMoving);
@@ -34,5 +34,17 @@ public class CharacterAnimatorController : MonoBehaviour
     {
         if (isRunning) animator.SetBool("IsRunning", isRunning);
         else animator.SetBool("IsRunning", isRunning);
+    }
+
+    public void ZombieHitMelee(bool isAttacking)
+    {
+        if (isAttacking) animator.SetBool("IsAttacking", isAttacking);
+        else animator.SetBool("IsAttacking", isAttacking);
+    }
+
+    public void ZombieDead (bool isDead)
+    {
+        if (isDead) animator.SetBool("IsDead", isDead);
+        else animator.SetBool("IsDead", isDead);
     }
 }

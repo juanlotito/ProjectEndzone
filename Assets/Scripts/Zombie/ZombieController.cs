@@ -1,103 +1,159 @@
+using System.Collections;
 using UnityEngine;
 
 public class ZombieController : MonoBehaviour
 {
-    public float moveSpeed = 2f; // Velocidad del movimiento del zombie
-    public float detectionRange = 10f; // Rango de detección del zombie
-    public float followRange = 20f; // Rango de seguimiento del zombie
-    public Transform[] waypoints; // Puntos de patrulla del zombie
-    [SerializeField] private Transform view;
+    [SerializeField] private GameObject player;
+    [SerializeField] private Transform originMelee;
     [SerializeField] private CharacterAnimatorController animatorController;
-    private float rotationSpeed = 10f;
-    private int currentWaypointIndex = 0; // Índice del punto de patrulla actual
-    [SerializeField] private Transform playerTransform; // Transform del jugador
-    private bool isFollowingPlayer = false; // Booleano para determinar si el zombie está siguiendo al jugador
 
-    void Update()
+    #region Behavour Variables
+    private int routine;
+    private float time;
+    private Quaternion angle;
+    private float grade;
+    #endregion
+
+    #region Patroll Variables
+    private float speedWalk = 1f;
+    private float speedRotationWalk = 0.5f;
+    #endregion
+
+    #region Chasing Variables
+    private float speedRotationRun = 1f;
+    private float speedRun = 2f;
+    private float distanceToChase = 15f;
+    #endregion
+
+    #region Melee Variables
+    private float meleeRange = 0.7f;
+    private float lastHitMelee = 0f;
+    private float reloadTime = 1f;
+    #endregion
+
+    #region Other
+    private int HP = 100;
+    #endregion
+
+    private void Update()
     {
-        if (!isFollowingPlayer) // Si el zombie no está siguiendo al jugador
+        ZombieBehavor();
+        CheckAlive();
+    }
+
+    void ZombieBehavor()
+    {
+        if (Vector3.Distance(transform.position, player.transform.position) > distanceToChase)
         {
-            Patrol(); // Realizar patrulla
+            animatorController.ZombieChasing(false);
+
+            time += 1 * Time.deltaTime;
+            if (time >= 4)
+            {
+                routine = Random.Range(0, 2);
+                time = 0;
+            }
+            switch (routine)
+            {
+                case 0:
+                    animatorController.ZombieWalk(false);
+                    break;
+
+                case 1:
+                    grade = Random.Range(0, 360);
+                    angle = Quaternion.Euler(0, grade, 0);
+                    routine++;
+                    break;
+
+                case 2:
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, angle, speedRotationWalk);
+                    transform.Translate(Vector3.forward * speedWalk * Time.deltaTime);
+                    animatorController.ZombieWalk(true);
+                    break;
+            }
         }
         else
         {
-            FollowPlayer(); // Seguir al jugador
-        }
-    }
-
-    void Patrol()
-    {
-        // Calcular la dirección hacia el siguiente punto de patrulla
-        Vector3 direction = waypoints[currentWaypointIndex].position - transform.position;
-        direction.y = 0f;
-
-        // Rotar al zombie hacia la dirección del siguiente punto de patrulla
-        if (direction != Vector3.zero)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed * Time.deltaTime);
-        }
-
-        // Mover el zombie hacia el siguiente punto de patrulla
-        transform.position = Vector3.MoveTowards(transform.position, waypoints[currentWaypointIndex].position, moveSpeed * Time.deltaTime);
-
-        animatorController.ZombiePatroll(true);
-
-        // Si el zombie llegó al punto de patrulla actual, seleccionar el siguiente punto de patrulla
-        if (transform.position == waypoints[currentWaypointIndex].position)
-        {
-            currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
-        }
-
-        // Realizar un raycast de largo alcance en dirección al jugador
-        RaycastHit hit;
-        if (Physics.Raycast(view.position, playerTransform.position - transform.position, out hit, detectionRange))
-        {
-            // Si el raycast golpeó al jugador, cambiar a seguir al jugador
-            if (hit.collider.CompareTag("Player"))
+            if (Vector3.Distance(transform.position, player.transform.position)> 1)
             {
-                isFollowingPlayer = true;
+                var lookPos = player.transform.position - transform.position;
+                lookPos.y = 0;
+                var rotation = Quaternion.LookRotation(lookPos);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, speedRotationRun);
+
+                animatorController.ZombieWalk(false);
+                animatorController.ZombieChasing(true);
+
+                transform.Translate(Vector3.forward * speedRun * Time.deltaTime);
+
+                animatorController.ZombieHitMelee(false);
             }
-        }
-    }
-
-    void FollowPlayer()
-    {
-        // Calcular la dirección hacia el jugador
-        Vector3 direction = playerTransform.position - transform.position;
-        direction.y = 0f;
-
-        animatorController.ZombieChasing(true);
-
-        // Rotar al zombie hacia la dirección del jugador
-        if (direction != Vector3.zero)
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(direction), rotationSpeed * Time.deltaTime);
-        }
-
-        // Mover el zombie hacia el jugador
-        transform.position = Vector3.MoveTowards(transform.position, playerTransform.position, moveSpeed * Time.deltaTime);
-        var lastPositionKnwown = playerTransform.position;
-
-        // Realizar un raycast de largo alcance en dirección al jugador
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, playerTransform.position - transform.position, out hit, followRange))
-        {
-            // Si el raycast no golpeó al jugador, volver a patrullar
-            if (!hit.collider.CompareTag("Player"))
+            else
             {
-                transform.position = Vector3.MoveTowards(transform.position, lastPositionKnwown, moveSpeed * Time.deltaTime);
-                
-                if (transform.position == lastPositionKnwown) 
-                    isFollowingPlayer = false;
-
+                animatorController.ZombieWalk(false);
                 animatorController.ZombieChasing(false);
+                animatorController.ZombieHitMelee(true);
+                
+                if (Time.time > lastHitMelee + 1f)
+                {
+                    HitMelee();
+                    lastHitMelee = Time.time;
+                }
             }
+            
         }
     }
 
-    private void OnDrawGizmos()
+    public void EndAttack ()
+    {
+        animatorController.ZombieHitMelee(false);
+    }
+
+
+    private IEnumerator HitMeleeCoroutine()
+    {
+        animatorController.ZombieHitMelee(true);
+
+        RaycastHit hit;
+        if (Physics.Raycast(originMelee.position, originMelee.transform.forward, out hit, meleeRange))
+        {
+            Debug.Log("Pegue");
+        }
+        animatorController.ZombieHitMelee(false);
+        yield return new WaitForSeconds(reloadTime);
+
+        
+    }
+
+    private void HitMelee()
+    {
+        StartCoroutine(HitMeleeCoroutine());
+    }
+
+    public void TakeDamage(int damage)
+    {
+        HP -= damage;
+    }
+
+    private void CheckAlive()
+    {
+        if (HP<=0)
+        {
+            /*grade = 0f;
+            distanceToChase = 10000f;
+            speedWalk = 0f;
+            speedRun = 0f;
+            speedRotationWalk = 0f;
+            speedRotationRun = 0f;*/
+            Destroy(gameObject);
+            animatorController.ZombieDead(true);
+
+        }       
+    }
+
+    /*private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawRay(view.position, transform.forward * detectionRange);
-    }
+    }*/
 }
