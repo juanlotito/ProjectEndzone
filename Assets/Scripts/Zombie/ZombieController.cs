@@ -147,6 +147,7 @@ public class ZombieController : MonoBehaviour
             speedRotationRun = 0f;*/
             Destroy(gameObject);
             animatorController.ZombieDead(true);
+            GameManager.instance.AddKill();
 
         }       
     }
