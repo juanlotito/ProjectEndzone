@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ZombieController : MonoBehaviour
 {
-    [SerializeField] private GameObject player;
+    private GameObject player;
     [SerializeField] private Transform originMelee;
     [SerializeField] private CharacterAnimatorController animatorController;
 
@@ -39,6 +39,11 @@ public class ZombieController : MonoBehaviour
     {
         ZombieBehavor();
         CheckAlive();
+    }
+
+    private void Awake()
+    {
+        player = GameObject.FindWithTag("Player");
     }
 
     void ZombieBehavor()
