@@ -5,7 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
-    public int totalKills = 0;
+    public int totalKills;
+    public int currentZombies;
 
 
     private void Awake()
@@ -19,14 +20,22 @@ public class GameManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        totalKills = 0;
+        currentZombies = 0;
     }
 
     public void AddKill ()
     {
         totalKills++;
         print("Se ha sumado una kill. Total: " + totalKills);
+        currentZombies--;
     }
 
+    public void AddZombie()
+    {
+        this.currentZombies++;
+    }
 
 
 }
