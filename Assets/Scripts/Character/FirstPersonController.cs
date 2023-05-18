@@ -60,6 +60,9 @@ public class FirstPersonController : MonoBehaviour
     private int meleeDamage = 50;
     #endregion
 
+    #region Other
+    private int hp = 100;
+    #endregion
 
     private void Awake()
     {
@@ -281,6 +284,24 @@ public class FirstPersonController : MonoBehaviour
     private void HitMelee()
     {
         StartCoroutine(HitMeleeCoroutine());
+    }
+
+    public void GetDamate(int damage)
+    {
+        if(hp-damage >= 0)
+        {
+            hp -= damage;
+        }
+        else
+        {
+            //TODO: Muerte del jugador
+            print("Me Mori");
+        }
+    }
+
+    public int GetHp()
+    {
+        return this.hp;
     }
 
     private void OnDrawGizmos()

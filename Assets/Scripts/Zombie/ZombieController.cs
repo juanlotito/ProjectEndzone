@@ -4,6 +4,7 @@ using UnityEngine;
 public class ZombieController : MonoBehaviour
 {
     private GameObject player;
+    private GameManager gameManager;
     [SerializeField] private Transform originMelee;
     [SerializeField] private CharacterAnimatorController animatorController;
 
@@ -29,6 +30,7 @@ public class ZombieController : MonoBehaviour
     private float meleeRange = 0.7f;
     private float lastHitMelee = 0f;
     private float reloadTime = 1f;
+    private float meleDamage = 5f;
     #endregion
 
     #region Other
@@ -44,6 +46,11 @@ public class ZombieController : MonoBehaviour
     private void Awake()
     {
         player = GameObject.FindWithTag("Player");
+    }
+
+    private void Start()
+    {
+        gameManager = GameManager.instance;
     }
 
     void ZombieBehavor()
@@ -114,7 +121,6 @@ public class ZombieController : MonoBehaviour
         animatorController.ZombieHitMelee(false);
     }
 
-
     private IEnumerator HitMeleeCoroutine()
     {
         animatorController.ZombieHitMelee(true);
@@ -133,6 +139,7 @@ public class ZombieController : MonoBehaviour
     private void HitMelee()
     {
         StartCoroutine(HitMeleeCoroutine());
+        gameManager.TakeDamageOnPlayer((int)meleDamage);
     }
 
     public void TakeDamage(int damage)

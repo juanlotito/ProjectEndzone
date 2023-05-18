@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private FirstPersonController player;
     public static GameManager instance;
     public int totalKills;
     public int currentZombies;
 
-
-    private void Awake()
+   private void Awake()
     {
         if (instance == null)
         {
@@ -35,6 +35,21 @@ public class GameManager : MonoBehaviour
     public void AddZombie()
     {
         this.currentZombies++;
+    }
+
+    public void TakeDamageOnPlayer(int damage)
+    {
+        player.GetDamate(damage);
+    }
+
+    public int GetPlayerHP()
+    {
+        return this.player.GetHp();
+    }
+
+    public int GetKills () 
+    {
+        return this.totalKills;
     }
 
 
