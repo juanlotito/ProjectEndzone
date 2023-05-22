@@ -5,21 +5,27 @@ using UnityEngine;
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private GameObject[] spawnPoints; 
-    [SerializeField] private GameObject zombiePrefab;
-    private int maxZombies = 5;
-    
-
+    [SerializeField] private FemaleZombieAController femaleAZombiePrefab;
+    [SerializeField] private MaleZombieAController maleAZombiePrefab;
+    [SerializeField] private LevelData levelData;
+    private float spawnTimer = 0f; 
 
     private void Update()
     {
-        SpawnZombies();    
+        spawnTimer += Time.deltaTime;
+
+        if (spawnTimer >= levelData.spawnTime)
+        {
+            SpawnZombies();
+            spawnTimer = 0f;
+        }
     }
 
     private void SpawnZombies()
     {
         var currentZombies = GameManager.instance.currentZombies;
 
-        if (currentZombies >= maxZombies)
+        if (currentZombies >= levelData.maxZombies)
         {
             return;
         }
@@ -27,8 +33,19 @@ public class EnemySpawner : MonoBehaviour
         int spawnIndex = Random.Range(0, spawnPoints.Length);
         Transform spawnPointChosen = spawnPoints[spawnIndex].transform;
 
-        Instantiate(zombiePrefab, spawnPointChosen.position, spawnPointChosen.rotation);
+        int randomZombieType = Random.Range(0, 2); // 0 para ZombieMale, 1 para ZombieFemale (POR AHORA; TODO: MAS ZOMBIES)
+
+        ZombieController zombieInstance;
+
+        if (randomZombieType == 0)
+        {
+            zombieInstance = Instantiate(maleAZombiePrefab, spawnPointChosen.position, spawnPointChosen.rotation);
+        }
+        else
+        {
+            zombieInstance = Instantiate(femaleAZombiePrefab, spawnPointChosen.position, spawnPointChosen.rotation);
+        }
+
         GameManager.instance.AddZombie();
     }
-
 }

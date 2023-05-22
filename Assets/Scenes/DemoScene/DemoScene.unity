@@ -4325,8 +4325,11 @@ MonoBehaviour:
   - {fileID: 2065721763}
   - {fileID: 1552350042}
   - {fileID: 832892369}
-  zombiePrefab: {fileID: 3141882679072643792, guid: e24cdb649c91fc14cb441aec585b1da6,
+  femaleAZombiePrefab: {fileID: 1801781292456127718, guid: 85a51bf366eee05438522c65f562e752,
     type: 3}
+  maleAZombiePrefab: {fileID: 7403824235664588501, guid: 74032c156eb977b40bb7e7f2d29e7478,
+    type: 3}
+  levelData: {fileID: 11400000, guid: 552ee500356df8349a82421c4cb4c7fe, type: 2}
 --- !u!4 &628976161
 Transform:
   m_ObjectHideFlags: 0
@@ -10114,7 +10117,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1496316361
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10348,9 +10351,9 @@ RectTransform:
   m_Father: {fileID: 1378386825}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 959.9995, y: -265.337}
   m_SizeDelta: {x: 769.678, y: 73.605}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1521448049
@@ -11477,9 +11480,9 @@ RectTransform:
   m_Father: {fileID: 1378386825}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 959.9995, y: -442.22833}
   m_SizeDelta: {x: 769.678, y: 73.605}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1692376251
@@ -15024,9 +15027,9 @@ RectTransform:
   m_Father: {fileID: 1378386825}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 959.9995, y: -88.44567}
   m_SizeDelta: {x: 769.678, y: 73.605}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2141939372
