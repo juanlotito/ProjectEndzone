@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -46,5 +47,15 @@ public class CharacterAnimatorController : MonoBehaviour
     {
         if (isDead) animator.SetBool("IsDead", isDead);
         else animator.SetBool("IsDead", isDead);
+    }
+
+    public void ZombieDetection()
+    {
+        animator.SetTrigger("Detection");
+    }
+
+    internal void ZombieAttackAmbush(bool ambush)
+    {
+        animator.SetBool("Ambush", ambush);
     }
 }
