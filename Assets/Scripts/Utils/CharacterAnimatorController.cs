@@ -9,52 +9,30 @@ public class CharacterAnimatorController : MonoBehaviour
 
     public void Walk(bool isWalking)
     {
-        if (isWalking) animator.SetBool("IsWalking", true);
-        else animator.SetBool("IsWalking", false);
+        animator.SetBool("IsWalking", isWalking);
     }
 
     public void Sprint(bool isSprinting)
     {
-        if (isSprinting) animator.SetBool("IsSprinting", true);
-        else animator.SetBool("IsSprinting", false);
+        animator.SetBool("IsSprinting", isSprinting);
     }
 
     public void HitMelee(bool isHittingMelee)
     {
-        if (isHittingMelee) animator.SetBool("IsHittingMelee", true);
-        else animator.SetBool("IsHittingMelee", false);
+        animator.SetBool("IsHittingMelee", isHittingMelee);
     }
 
-    public void ZombieWalk(bool isMoving)
+    public void Dead (bool isDead)
     {
-        if (isMoving) animator.SetBool("IsMoving", isMoving);
-        else animator.SetBool("IsMoving", isMoving);
+        animator.SetBool("IsDead", isDead);
     }
 
-    public void ZombieChasing(bool isRunning)
-    {
-        if (isRunning) animator.SetBool("IsRunning", isRunning);
-        else animator.SetBool("IsRunning", isRunning);
-    }
-
-    public void ZombieHitMelee(bool isAttacking)
-    {
-        if (isAttacking) animator.SetBool("IsAttacking", isAttacking);
-        else animator.SetBool("IsAttacking", isAttacking);
-    }
-
-    public void ZombieDead (bool isDead)
-    {
-        if (isDead) animator.SetBool("IsDead", isDead);
-        else animator.SetBool("IsDead", isDead);
-    }
-
-    public void ZombieDetection()
+    public void Detection()
     {
         animator.SetTrigger("Detection");
     }
 
-    internal void ZombieAttackAmbush(bool ambush)
+    internal void AttackAmbush(bool ambush)
     {
         animator.SetBool("Ambush", ambush);
     }
