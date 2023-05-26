@@ -21,4 +21,3 @@ MonoBehaviour:
   meleeRange: 5
   reloadTime: 15
   meleDamage: 20
-  HP: 125

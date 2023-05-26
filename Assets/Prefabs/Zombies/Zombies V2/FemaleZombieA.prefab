@@ -417,6 +417,7 @@ GameObject:
   - component: {fileID: 2528435882952139673}
   - component: {fileID: 2528435882952139672}
   - component: {fileID: 1801781292456127718}
+  - component: {fileID: -8019423281131158721}
   m_Layer: 0
   m_Name: FemaleZombieA
   m_TagString: Zombie
@@ -535,6 +536,21 @@ MonoBehaviour:
   zombieData: {fileID: 11400000, guid: 91077aa091a9c9c439a784a38f5a120f, type: 2}
   originMelee: {fileID: 2528435883009948032}
   animatorController: {fileID: 2528435882952139672}
+  healthSystem: {fileID: -8019423281131158721}
+--- !u!114 &-8019423281131158721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3447407503340493950}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a71f64e34daa1f47be7c7a3ec354ded, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 75
+  invencibilityTime: 0
 --- !u!1 &3763659948884656105
 GameObject:
   m_ObjectHideFlags: 0

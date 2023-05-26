@@ -39,10 +39,10 @@ public class GameManager : MonoBehaviour
 
     public void TakeDamageOnPlayer(int damage)
     {
-        player.GetDamate(damage);
+        player.Hitted(damage);
     }
 
-    public int GetPlayerHP()
+    public float GetPlayerHP()
     {
         return this.player.GetHp();
     }

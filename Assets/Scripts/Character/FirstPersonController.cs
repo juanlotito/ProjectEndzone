@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 
@@ -61,7 +62,9 @@ public class FirstPersonController : MonoBehaviour
     #endregion
 
     #region Other
-    private int hp = 100;
+    [SerializeField] public HealthSystem healthSystem;
+    public UnityEvent OnDamageUpPowerUpPicked;
+    public UnityEvent OnDamageDownPowerUpPicked;
     #endregion
 
     private void Awake()
@@ -72,6 +75,8 @@ public class FirstPersonController : MonoBehaviour
 
         playerCamera.fieldOfView = fov;
         originalScale = transform.localScale;
+
+        healthSystem.OnEntityDead += OnEntityDeadHandler;
 
     }
 
@@ -93,6 +98,8 @@ public class FirstPersonController : MonoBehaviour
             //crosshairObject.gameObject.SetActive(false);
         }
         #endregion
+
+        this.healthSystem.Init();
     }
 
     private void Update()
@@ -286,22 +293,48 @@ public class FirstPersonController : MonoBehaviour
         StartCoroutine(HitMeleeCoroutine());
     }
 
-    public void GetDamate(int damage)
+    public void Hitted(float damage)
     {
-        if(hp-damage >= 0)
-        {
-            hp -= damage;
-        }
-        else
-        {
-            //TODO: Muerte del jugador
-            print("Me Mori");
-        }
+        healthSystem.EntityHitted(damage);
     }
 
-    public int GetHp()
+    public float GetHp()
     {
-        return this.hp;
+        return healthSystem.GetCurrentHealth();
+    }
+
+    public virtual void OnEntityDeadHandler()
+    {
+        this.animatorController.Dead(true);
+        this.playerCanMove = false;
+        this.cameraCanMove = false;
+    }
+
+    private void OnDestroy()
+    {
+        healthSystem.OnEntityDead -= OnEntityDeadHandler;
+    }
+
+    public void OnDamagePowerUpPicked ()
+    {
+        OnDamageUpPowerUpPicked?.Invoke();
+    }
+
+    public void OnDamagePowerDownPicked()
+    {
+        OnDamageDownPowerUpPicked?.Invoke();
+    }
+
+    public void RaiseMaxDamage(int amount)
+    {
+        Debug.Log("El daño del jugador aumentó en " + amount);
+        this.meleeDamage += amount;
+    }
+
+    public void ReduceMaxDamage (int amount)
+    {
+        Debug.Log("El daño del jugador disminuyó en " + amount);
+        this.meleeDamage -= amount;
     }
 
     private void OnDrawGizmos()

@@ -24,10 +24,6 @@ public class ZombieData : ScriptableObject
     public float meleDamage  = 15f;
     #endregion
 
-    #region Other
-    public int HP = 100;
-    #endregion
-
     private void Awake()
     {
        player =  GameObject.FindWithTag("Player");
