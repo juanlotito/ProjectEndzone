@@ -19,7 +19,7 @@ public class FemaleZombieAController : ZombieController
     }
     public override void ZombieBehavor()
     {
-        if ((Vector3.Distance(transform.position, zombieData.player.transform.position) > zombieData.distanceToChase) && zombieCanMove)
+        if ((Vector3.Distance(transform.position, zombieData.GetPlayer().transform.position) > zombieData.distanceToChase) && zombieCanMove)
         {
             animatorController.Sprint(false);
 
@@ -50,9 +50,9 @@ public class FemaleZombieAController : ZombieController
         }
         else
         {
-            if ((Vector3.Distance(transform.position, zombieData.player.transform.position) > 1) && zombieCanMove)
+            if ((Vector3.Distance(transform.position, zombieData.GetPlayer().transform.position) > 1) && zombieCanMove)
             {
-                var lookPos = zombieData.player.transform.position - transform.position;
+                var lookPos = zombieData.GetPlayer().transform.position - transform.position;
                 lookPos.y = 0;
                 var rotation = Quaternion.LookRotation(lookPos);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, zombieData.speedRotationRun);

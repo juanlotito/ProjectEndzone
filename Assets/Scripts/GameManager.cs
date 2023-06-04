@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private FirstPersonController player;
+    [SerializeField] private PostProcessController postProcessController;
     public static GameManager instance;
     public int totalKills;
     public int currentZombies;
@@ -40,6 +41,7 @@ public class GameManager : MonoBehaviour
     public void TakeDamageOnPlayer(int damage)
     {
         player.Hitted(damage);
+        postProcessController.ShowDamageVignette();
     }
 
     public float GetPlayerHP()
