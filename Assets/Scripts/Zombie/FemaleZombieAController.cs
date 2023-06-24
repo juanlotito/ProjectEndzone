@@ -11,12 +11,23 @@ public class FemaleZombieAController : ZombieController
     private float grade;
     private float lastHitMelee = 0f;
     private bool zombieCanMove = true;
+    private Rigidbody[] rigidbodies;
+    [SerializeField] private Animator animator;
     #endregion
+
+
+    private void Start()
+    {
+        rigidbodies = transform.GetComponentsInChildren<Rigidbody>();
+        SetEnabled(false);
+        this.gameManager = GameManager.instance;
+    }
 
     private void Awake()
     {
         this.healthSystem.OnEntityDead += OnEntityDeadHandler;
     }
+
     public override void ZombieBehavor()
     {
         if ((Vector3.Distance(transform.position, zombieData.GetPlayer().transform.position) > zombieData.distanceToChase) && zombieCanMove)
@@ -67,14 +78,13 @@ public class FemaleZombieAController : ZombieController
             else
             {
                 if (zombieCanMove)
-                {
-                    animatorController.HitMelee(true);
+                { 
                     animatorController.Walk(false);
                     animatorController.Sprint(false);
 
                     if (Time.time > lastHitMelee + 1.8f)
                     {
-                        HitMelee();
+                        animatorController.HitMelee(true);
                         lastHitMelee = Time.time;
                     }
                 }
@@ -89,12 +99,26 @@ public class FemaleZombieAController : ZombieController
         }
     }
 
+    void SetEnabled(bool enabled)
+    {
+        bool isKinematic = !enabled;
+        foreach (Rigidbody rigidbody in rigidbodies)
+        {
+            rigidbody.isKinematic = isKinematic;
+        }
+
+        animator.enabled = !enabled;
+    }
+
     public virtual void OnEntityDeadHandler()
     {
         this.animatorController.Dead(true);
-        this.zombieCanMove = false;
+        SetEnabled(true);
+        zombieCanMove = false;
+        zombieCanHit = false;
         this.gameManager.AddKill();
     }
+
     private void OnDestroy()
     {
         healthSystem.OnEntityDead -= OnEntityDeadHandler;

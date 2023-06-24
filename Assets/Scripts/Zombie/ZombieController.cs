@@ -8,6 +8,7 @@ public abstract class ZombieController : MonoBehaviour
     [SerializeField] private Transform originMelee;
     public CharacterAnimatorController animatorController;
     public HealthSystem healthSystem;
+    protected bool zombieCanHit = true;
 
     protected virtual void Update()
     {
@@ -26,30 +27,25 @@ public abstract class ZombieController : MonoBehaviour
         animatorController.HitMelee(false);
     }
 
-    public virtual IEnumerator HitMeleeCoroutine()
+    public void HandleCollision(Collider other)
     {
-        animatorController.HitMelee(true);
-
-        RaycastHit hit;
-        if (Physics.Raycast(originMelee.position, originMelee.transform.forward, out hit, zombieData.meleeRange))
+        if (other.gameObject.CompareTag("Player") && zombieCanHit)
         {
-            Debug.Log("Pegue");
+            Vector3 knockbackDirection = other.gameObject.transform.position - this.transform.position;
+            knockbackDirection.Normalize();
+            other.attachedRigidbody.AddForce(knockbackDirection * this.zombieData.knockbackForce, ForceMode.Impulse);
+            gameManager.TakeDamageOnPlayer((int)zombieData.meleDamage);
         }
-        animatorController.HitMelee(false);
-        yield return new WaitForSeconds(zombieData.reloadTime);
-
-        
     }
-
-    public virtual void HitMelee()
-    {
-        StartCoroutine(HitMeleeCoroutine());
-        gameManager.TakeDamageOnPlayer((int)zombieData.meleDamage);
-    }
-
+ 
     public virtual void TakeDamage(int damage)
     {
         this.healthSystem.TakeDamage(damage);
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawRay(originMelee.position, originMelee.transform.forward * zombieData.meleeRange);
+    }
 }

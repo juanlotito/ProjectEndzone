@@ -20,6 +20,7 @@ public class ZombieData : ScriptableObject
     public float meleeRange  = 15f;
     public float reloadTime  = 15f;
     public float meleDamage  = 15f;
+    public float knockbackForce = 5f;
     #endregion
 
     public GameObject GetPlayer()
