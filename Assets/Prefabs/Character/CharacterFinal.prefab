@@ -3786,6 +3786,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1729161353000399765}
   - component: {fileID: 1729161353000399766}
+  - component: {fileID: 916843311401305620}
   m_Layer: 3
   m_Name: Chest
   m_TagString: Untagged
@@ -3917,6 +3918,19 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.28162423, y: -0.03190115, z: 0.000000029802322}
     m_Extent: {x: 0.2907795, y: 0.20579639, z: 0.2620001}
   m_DirtyAABB: 0
+--- !u!65 &916843311401305620
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1729161353000399764}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.3561933, y: 0.5886731, z: 1.0783354}
+  m_Center: {x: 0.060120832, y: 1.3396738, z: 0.27845654}
 --- !u!1 &1729161353003846360
 GameObject:
   m_ObjectHideFlags: 0
@@ -4455,6 +4469,7 @@ MonoBehaviour:
   crouchHeight: 0.75
   speedReduction: 0.5
   originMelee: {fileID: 1729161353478298723}
+  meleeRange: 1
   healthSystem: {fileID: 1729161352632852493}
   OnDamageUpPowerUpPicked:
     m_PersistentCalls:

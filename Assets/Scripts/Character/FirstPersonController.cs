@@ -58,6 +58,7 @@ public class FirstPersonController : MonoBehaviour
     [SerializeField] private float meleeRange = 1f;
     private float lastHitMelee = 0f;
     private float reloadTime = 2f;
+    private bool isHittingMelee = false;
     private int meleeDamage = 50;
     private float meleeKnockback = 5f;
     #endregion
@@ -140,6 +141,7 @@ public class FirstPersonController : MonoBehaviour
         #region Melee
         if (Input.GetMouseButtonDown(0) && Time.time > lastHitMelee + 1f)
         {
+            isHittingMelee = true;
             HitMelee();
             lastHitMelee = Time.time;
         }
@@ -268,13 +270,14 @@ public class FirstPersonController : MonoBehaviour
 
     public void HandleCollision(Collider other)
     {
-        if (other.gameObject.CompareTag("Zombie"))
+        if (other.gameObject.CompareTag("Zombie") && isHittingMelee)
         {
             var zombie = other.gameObject.GetComponent<ZombieController>();
             Vector3 knockbackDirection = other.gameObject.transform.position - this.transform.position;
             knockbackDirection.Normalize();
             other.attachedRigidbody.AddForce(knockbackDirection * meleeKnockback, ForceMode.Impulse);
             zombie.TakeDamage(meleeDamage);
+            isHittingMelee = false;
         }
     }
 
