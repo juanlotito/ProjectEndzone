@@ -106,6 +106,31 @@ public class MaleZombieAController : ZombieController
         }
     }
 
+    #region OLD RAYCAST SYSTEM
+    //DEV COMMENT: Se deja registro del viejo sistema de Raycast para los ataques a melee. El mismo fue modificado por un sistema mas eficiente
+    //y simple de implementar.
+
+    /*private IEnumerator HitMeleeCoroutine()
+    {
+        animatorController.ZombieHitMelee(true);
+
+        RaycastHit hit;
+        if (Physics.Raycast(originMelee.position, originMelee.transform.forward, out hit, meleeRange))
+        {
+            Debug.Log("Pegue");
+        }
+        animatorController.ZombieHitMelee(false);
+        yield return new WaitForSeconds(reloadTime);
+
+
+    }
+
+    private void HitMelee()
+    {
+        StartCoroutine(HitMeleeCoroutine());
+    }*/
+    #endregion
+
     public virtual void OnEntityDeadHandler()
     {
         this.animatorController.Dead(true);
