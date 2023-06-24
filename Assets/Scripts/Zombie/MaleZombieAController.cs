@@ -11,6 +11,8 @@ public class MaleZombieAController : ZombieController
     private float grade;
     private float lastHitMelee = 0f;
     private bool zombieCanMove = true;
+    private Rigidbody[] rigidbodies;
+    [SerializeField] private Animator animator;
     #endregion
 
 
@@ -19,9 +21,16 @@ public class MaleZombieAController : ZombieController
         healthSystem.OnEntityDead += OnEntityDeadHandler;
     }
 
+    private void Start()
+    {
+        rigidbodies = transform.GetComponentsInChildren<Rigidbody>();
+        SetEnabled(false);
+        this.gameManager = GameManager.instance;
+    }
+
     public override void ZombieBehavor()
     {
-        if ((Vector3.Distance(transform.position, zombieData.player.transform.position) > zombieData.distanceToChase) && zombieCanMove)
+        if ((Vector3.Distance(transform.position, zombieData.GetPlayer().transform.position) > zombieData.distanceToChase) && zombieCanMove)
         {
             animatorController.Sprint(false);
 
@@ -52,12 +61,12 @@ public class MaleZombieAController : ZombieController
         }
         else
         {
-            if ((Vector3.Distance(transform.position, zombieData.player.transform.position) > 1) && zombieCanMove)
+            if ((Vector3.Distance(transform.position, zombieData.GetPlayer().transform.position) > 1) && zombieCanMove)
             {
                 animatorController.Walk(false);
                 animatorController.Sprint(true);
 
-                Vector3 targetDirection = zombieData.player.transform.position - transform.position;
+                Vector3 targetDirection = zombieData.GetPlayer().transform.position - transform.position;
                 targetDirection.y = 0;
                 Quaternion rotation = Quaternion.LookRotation(targetDirection);
 
@@ -65,26 +74,25 @@ public class MaleZombieAController : ZombieController
 
                 transform.Translate(Vector3.forward * zombieData.speedRun * 1.5f * Time.deltaTime);
 
-                animatorController.AttackAmbush(true);
-
                 if (Time.time > lastHitMelee + 1.8f)
                 {
-                    HitMelee();
+                    zombieCanMove = false;
+                    animatorController.AttackAmbush(true);
                     lastHitMelee = Time.time;
+                    zombieCanMove = true;
                 }
             }
             else
             {
                 if (zombieCanMove)
                 {
-                    animatorController.HitMelee(true);
                     animatorController.Walk(false);
                     animatorController.Sprint(false);
                     animatorController.AttackAmbush(false);
 
                     if (Time.time > lastHitMelee + 1.8f)
                     {
-                        HitMelee();
+                        animatorController.HitMelee(true);
                         lastHitMelee = Time.time;
                     }
                 }
@@ -101,9 +109,23 @@ public class MaleZombieAController : ZombieController
     public virtual void OnEntityDeadHandler()
     {
         this.animatorController.Dead(true);
+        SetEnabled(true);
         zombieCanMove = false;
+        zombieCanHit = false;
         this.gameManager.AddKill();
     }
+
+    void SetEnabled(bool enabled)
+    {
+        bool isKinematic = !enabled;
+        foreach(Rigidbody rigidbody in rigidbodies)
+        {
+            rigidbody.isKinematic = isKinematic;
+        }
+
+        animator.enabled = !enabled;
+    }
+
 
     private void OnDestroy()
     {

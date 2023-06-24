@@ -11,15 +11,26 @@ public class FemaleZombieAController : ZombieController
     private float grade;
     private float lastHitMelee = 0f;
     private bool zombieCanMove = true;
+    private Rigidbody[] rigidbodies;
+    [SerializeField] private Animator animator;
     #endregion
+
+
+    private void Start()
+    {
+        rigidbodies = transform.GetComponentsInChildren<Rigidbody>();
+        SetEnabled(false);
+        this.gameManager = GameManager.instance;
+    }
 
     private void Awake()
     {
         this.healthSystem.OnEntityDead += OnEntityDeadHandler;
     }
+
     public override void ZombieBehavor()
     {
-        if ((Vector3.Distance(transform.position, zombieData.player.transform.position) > zombieData.distanceToChase) && zombieCanMove)
+        if ((Vector3.Distance(transform.position, zombieData.GetPlayer().transform.position) > zombieData.distanceToChase) && zombieCanMove)
         {
             animatorController.Sprint(false);
 
@@ -50,9 +61,9 @@ public class FemaleZombieAController : ZombieController
         }
         else
         {
-            if ((Vector3.Distance(transform.position, zombieData.player.transform.position) > 1) && zombieCanMove)
+            if ((Vector3.Distance(transform.position, zombieData.GetPlayer().transform.position) > 1) && zombieCanMove)
             {
-                var lookPos = zombieData.player.transform.position - transform.position;
+                var lookPos = zombieData.GetPlayer().transform.position - transform.position;
                 lookPos.y = 0;
                 var rotation = Quaternion.LookRotation(lookPos);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, rotation, zombieData.speedRotationRun);
@@ -67,14 +78,13 @@ public class FemaleZombieAController : ZombieController
             else
             {
                 if (zombieCanMove)
-                {
-                    animatorController.HitMelee(true);
+                { 
                     animatorController.Walk(false);
                     animatorController.Sprint(false);
 
                     if (Time.time > lastHitMelee + 1.8f)
                     {
-                        HitMelee();
+                        animatorController.HitMelee(true);
                         lastHitMelee = Time.time;
                     }
                 }
@@ -89,12 +99,26 @@ public class FemaleZombieAController : ZombieController
         }
     }
 
+    void SetEnabled(bool enabled)
+    {
+        bool isKinematic = !enabled;
+        foreach (Rigidbody rigidbody in rigidbodies)
+        {
+            rigidbody.isKinematic = isKinematic;
+        }
+
+        animator.enabled = !enabled;
+    }
+
     public virtual void OnEntityDeadHandler()
     {
         this.animatorController.Dead(true);
-        this.zombieCanMove = false;
+        SetEnabled(true);
+        zombieCanMove = false;
+        zombieCanHit = false;
         this.gameManager.AddKill();
     }
+
     private void OnDestroy()
     {
         healthSystem.OnEntityDead -= OnEntityDeadHandler;

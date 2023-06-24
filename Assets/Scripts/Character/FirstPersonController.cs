@@ -55,10 +55,11 @@ public class FirstPersonController : MonoBehaviour
 
     #region Melee Variables
     [SerializeField] private Transform originMelee;
-    private float meleeRange = 3f;
+    [SerializeField] private float meleeRange = 1f;
     private float lastHitMelee = 0f;
     private float reloadTime = 2f;
     private int meleeDamage = 50;
+    private float meleeKnockback = 5f;
     #endregion
 
     #region Other
@@ -140,7 +141,7 @@ public class FirstPersonController : MonoBehaviour
         if (Input.GetMouseButtonDown(0) && Time.time > lastHitMelee + 1f)
         {
             HitMelee();
-            lastHitMelee = Time.time;            
+            lastHitMelee = Time.time;
         }
         #endregion
 
@@ -265,32 +266,26 @@ public class FirstPersonController : MonoBehaviour
         }
     }
 
-    private IEnumerator HitMeleeCoroutine()
+    public void HandleCollision(Collider other)
     {
-        animatorController.HitMelee(true);
-
-        RaycastHit hit;
-        if (Physics.Raycast(originMelee.position, originMelee.transform.forward, out hit, meleeRange))
+        if (other.gameObject.CompareTag("Zombie"))
         {
-            Debug.Log("Pegue");
-            if(hit.collider.CompareTag("Zombie"))
-            {
-                ZombieController zombie = hit.collider.GetComponent<ZombieController>();
-                if (zombie != null)
-                {
-                    zombie.TakeDamage(meleeDamage);
-                }
-            }
+            var zombie = other.gameObject.GetComponent<ZombieController>();
+            Vector3 knockbackDirection = other.gameObject.transform.position - this.transform.position;
+            knockbackDirection.Normalize();
+            other.attachedRigidbody.AddForce(knockbackDirection * meleeKnockback, ForceMode.Impulse);
+            zombie.TakeDamage(meleeDamage);
         }
-
-        yield return new WaitForSeconds(reloadTime);
-
-        animatorController.HitMelee(false);
     }
 
     private void HitMelee()
     {
-        StartCoroutine(HitMeleeCoroutine());
+        this.animatorController.HitMelee(true);
+    }
+
+    public void OnHitAnimationComplete ()
+    {
+        this.animatorController.HitMelee(false);
     }
 
     public void Hitted(float damage)

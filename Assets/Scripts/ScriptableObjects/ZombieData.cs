@@ -5,8 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName ="Data/ZombieData")]
 public class ZombieData : ScriptableObject
 {
-    public GameObject player;
-
     #region Patroll Variables
     public float speedWalk = 2f;
     public float speedRotationWalk = 0.5f;
@@ -22,11 +20,11 @@ public class ZombieData : ScriptableObject
     public float meleeRange  = 15f;
     public float reloadTime  = 15f;
     public float meleDamage  = 15f;
+    public float knockbackForce = 5f;
     #endregion
 
-    private void Awake()
+    public GameObject GetPlayer()
     {
-       player =  GameObject.FindWithTag("Player");
+        return PlayerManager.instance.player;
     }
-
 }

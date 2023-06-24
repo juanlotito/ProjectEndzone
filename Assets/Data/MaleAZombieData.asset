@@ -12,12 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6c11ea419a8be84ebcbd50574ab0792, type: 3}
   m_Name: MaleAZombieData
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
   speedWalk: 2
   speedRotationWalk: 0.5
   speedRotationRun: 1
   speedRun: 2
   distanceToChase: 15
-  meleeRange: 5
+  meleeRange: 0.5
   reloadTime: 15
-  meleDamage: 20
+  meleDamage: 1
