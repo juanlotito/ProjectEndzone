@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af10619952341454e87bfda19e19c190, type: 3}
   m_Name: LevelData
   m_EditorClassIdentifier: 
-  maxZombies: 5
-  spawnTime: 2
+  maxZombies: 7
+  spawnTime: 5

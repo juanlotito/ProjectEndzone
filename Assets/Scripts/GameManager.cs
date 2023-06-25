@@ -6,6 +6,8 @@ public class GameManager : MonoBehaviour
 {
     [SerializeField] private FirstPersonController player;
     [SerializeField] private PostProcessController postProcessController;
+    [SerializeField] private GameObject lienzo;
+    [SerializeField] private GameObject canvas;
     public static GameManager instance;
     public int totalKills;
     public int currentZombies;
@@ -24,6 +26,11 @@ public class GameManager : MonoBehaviour
 
         totalKills = 0;
         currentZombies = 0;
+    }
+
+    private void Update()
+    {
+        CheckWin();
     }
 
     public void AddKill ()
@@ -52,6 +59,26 @@ public class GameManager : MonoBehaviour
     public int GetKills () 
     {
         return this.totalKills;
+    }
+
+    public void CheckWin()
+    {
+        if(totalKills >= 1)
+        {
+            this.player.SetPlayerCanMove(false);
+            lienzo.SetActive(true);
+            canvas.SetActive(true);
+            GameObject[] gameObjects = FindObjectsOfType<GameObject>();
+            foreach (GameObject gameObject in gameObjects)
+            {
+                if (gameObject.CompareTag("Player") || gameObject.CompareTag("Canvas"))
+                {
+                    continue;
+                }
+
+                Destroy(gameObject);
+            }
+        }
     }
 
 

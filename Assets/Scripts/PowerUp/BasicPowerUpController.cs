@@ -5,7 +5,7 @@ using UnityEngine;
 public abstract class BasicPowerUpController : MonoBehaviour
 {
     private bool hasCollided = false;
-    private FirstPersonController player;
+    [SerializeField] private FirstPersonController player;
 
     public void OnTriggerEnter(Collider other)
     {
@@ -14,7 +14,6 @@ public abstract class BasicPowerUpController : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             Destroy(gameObject);
-            player = other.GetComponent<FirstPersonController>();
             MakeEffect(player);
         }
 

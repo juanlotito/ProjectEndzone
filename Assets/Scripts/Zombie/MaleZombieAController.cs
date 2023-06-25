@@ -13,12 +13,27 @@ public class MaleZombieAController : ZombieController
     private bool zombieCanMove = true;
     private Rigidbody[] rigidbodies;
     [SerializeField] private Animator animator;
+    private bool isWalking = false;
+    private bool isIdle = false;
+    private bool isPlayingSound = false;
+    private bool hasPlayedSound = false;
+    private bool isAttacking = false;
+    private bool canPlay = true;
+    private AudioSource audioSource;
     #endregion
+
+    #region Sounds
+    [SerializeField] private AudioClip zombieIdleSound;
+    [SerializeField] private AudioClip zombieHitSound;
+    [SerializeField] private AudioClip zombieWalkSound;
+    [SerializeField] private AudioClip zombieDeadSound;
+    #endregion  
 
 
     private void Awake()
     {
         healthSystem.OnEntityDead += OnEntityDeadHandler;
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -26,6 +41,54 @@ public class MaleZombieAController : ZombieController
         rigidbodies = transform.GetComponentsInChildren<Rigidbody>();
         SetEnabled(false);
         this.gameManager = GameManager.instance;
+        
+    }
+
+    private void FixedUpdate()
+    {
+        if (isIdle)
+        {
+            if (!isPlayingSound && !hasPlayedSound && canPlay)
+            {
+                isPlayingSound = true;
+                audioSource.PlayOneShot(zombieIdleSound);
+                hasPlayedSound = true;
+            }
+            isWalking = false;
+            isAttacking = false;
+        }
+        else if (isWalking)
+        {
+            if (!isPlayingSound && !hasPlayedSound && canPlay)
+            {
+                isPlayingSound = true;
+                audioSource.PlayOneShot(zombieWalkSound);
+                hasPlayedSound = true;
+            }
+            isIdle = false;
+            isAttacking = false;
+        }
+        else if (isAttacking)
+        {
+            if (!isPlayingSound && !hasPlayedSound && canPlay)
+            {
+                isPlayingSound = true;
+                audioSource.PlayOneShot(zombieHitSound);
+                hasPlayedSound = true;
+            }
+            isIdle = false;
+            isWalking = false;
+        }
+        else
+        {
+            isIdle = false;
+            isWalking = false;
+            isAttacking = false;
+            isPlayingSound = false;
+            hasPlayedSound = false;
+            audioSource.Stop();
+        }
+
     }
 
     public override void ZombieBehavor()
@@ -44,9 +107,12 @@ public class MaleZombieAController : ZombieController
             {
                 case 0:
                     animatorController.Walk(false);
+                    isWalking = false;
+                    isIdle = true;
                     break;
 
                 case 1:
+                    isIdle = true;
                     grade = Random.Range(0, 360);
                     angle = Quaternion.Euler(0, grade, 0);
                     routine++;
@@ -55,6 +121,8 @@ public class MaleZombieAController : ZombieController
                 case 2:
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, angle, zombieData.speedRotationWalk);
                     transform.Translate(Vector3.forward * zombieData.speedWalk * Time.deltaTime);
+                    isWalking = true;
+                    isIdle = false;
                     animatorController.Walk(true);
                     break;
             }
@@ -65,6 +133,9 @@ public class MaleZombieAController : ZombieController
             {
                 animatorController.Walk(false);
                 animatorController.Sprint(true);
+
+                isIdle = false;
+                isWalking = true;
 
                 Vector3 targetDirection = zombieData.GetPlayer().transform.position - transform.position;
                 targetDirection.y = 0;
@@ -77,15 +148,20 @@ public class MaleZombieAController : ZombieController
                 if (Time.time > lastHitMelee + 1.8f)
                 {
                     zombieCanMove = false;
+                    isWalking = false;
+                    isIdle = false;
                     animatorController.AttackAmbush(true);
                     lastHitMelee = Time.time;
                     zombieCanMove = true;
+                    isPlayingSound = false;
                 }
             }
             else
             {
                 if (zombieCanMove)
                 {
+                    isWalking = false;
+                    isAttacking = true;
                     animatorController.Walk(false);
                     animatorController.Sprint(false);
                     animatorController.AttackAmbush(false);
@@ -94,6 +170,9 @@ public class MaleZombieAController : ZombieController
                     {
                         animatorController.HitMelee(true);
                         lastHitMelee = Time.time;
+                        isPlayingSound = false;
+                        isHittingMelee = true;
+
                     }
                 }
 
@@ -138,6 +217,9 @@ public class MaleZombieAController : ZombieController
         zombieCanMove = false;
         zombieCanHit = false;
         this.gameManager.AddKill();
+        audioSource.Stop();
+        audioSource.PlayOneShot(zombieDeadSound);
+        canPlay = false;
     }
 
     void SetEnabled(bool enabled)
@@ -150,7 +232,6 @@ public class MaleZombieAController : ZombieController
 
         animator.enabled = !enabled;
     }
-
 
     private void OnDestroy()
     {
