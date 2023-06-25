@@ -9,6 +9,13 @@ public class FirstPersonController : MonoBehaviour
     private Rigidbody rb;
     [SerializeField] private CharacterAnimatorController animatorController;
 
+    #region AudioClips
+    private bool playingSoundMovement = false;
+    [SerializeField] private AudioClip meleeSound;
+    [SerializeField] private AudioClip movingSound;
+    [SerializeField] private AudioClip hittedSound;
+    #endregion
+
     #region Camera Variables
     [SerializeField] private Camera playerCamera;
     [SerializeField] private float fov = 60f;
@@ -145,6 +152,30 @@ public class FirstPersonController : MonoBehaviour
             HitMelee();
             lastHitMelee = Time.time;
         }
+
+        #endregion
+
+        #region Sound Control
+        if ((isWalking || isSprinting) && !playingSoundMovement)
+        {
+            RunningSound();
+            playingSoundMovement = true;
+        }
+        else if ((isWalking || isSprinting) && playingSoundMovement)
+        {
+            Debug.Log("Reproducing...");
+            playingSoundMovement = true;
+        }
+        else if (playingSoundMovement)
+        {
+            StopRunningSound();
+            playingSoundMovement = false;
+        }
+        else
+        {
+            StopRunningSound();
+            playingSoundMovement = false;
+        }
         #endregion
 
     }
@@ -160,13 +191,11 @@ public class FirstPersonController : MonoBehaviour
             if (targetVelocity.y != 0 || targetVelocity.x != 0 || targetVelocity.z != 0)
             {
                 isWalking = true;
-
                 animatorController.Walk(isWalking);
             }
             else
             {
                 isWalking = false;
-
                 animatorController.Walk(isWalking);
             }
 
@@ -192,6 +221,7 @@ public class FirstPersonController : MonoBehaviour
                     }
 
                 }
+
                 rb.AddForce(velocityChange, ForceMode.VelocityChange);
             }
 
@@ -318,6 +348,17 @@ public class FirstPersonController : MonoBehaviour
     private void HitMelee()
     {
         this.animatorController.HitMelee(true);
+        SoundManager.Instance.PlayerMelee(meleeSound);
+    }
+
+    private void RunningSound()
+    {
+        SoundManager.Instance.PlayerMoving(movingSound);
+    }
+
+    private void StopRunningSound()
+    {
+        SoundManager.Instance.StopPlayerMoving();
     }
 
     public void OnHitAnimationComplete ()
@@ -328,6 +369,7 @@ public class FirstPersonController : MonoBehaviour
     public void Hitted(float damage)
     {
         healthSystem.EntityHitted(damage);
+        SoundManager.Instance.PlayerHitted(hittedSound);
     }
 
     public float GetHp()
@@ -373,5 +415,10 @@ public class FirstPersonController : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawRay(originMelee.position, originMelee.transform.forward * meleeRange);
+    }
+
+    public void SetPlayerCanMove(bool enabled)
+    {
+        playerCanMove = enabled;
     }
 }

@@ -9,6 +9,7 @@ public abstract class ZombieController : MonoBehaviour
     public CharacterAnimatorController animatorController;
     public HealthSystem healthSystem;
     protected bool zombieCanHit = true;
+    protected bool isHittingMelee = false;
 
     protected virtual void Update()
     {
@@ -29,12 +30,13 @@ public abstract class ZombieController : MonoBehaviour
 
     public void HandleCollision(Collider other)
     {
-        if (other.gameObject.CompareTag("Player") && zombieCanHit)
+        if (other.gameObject.CompareTag("Player") && zombieCanHit && isHittingMelee)
         {
             Vector3 knockbackDirection = other.gameObject.transform.position - this.transform.position;
             knockbackDirection.Normalize();
             other.attachedRigidbody.AddForce(knockbackDirection * this.zombieData.knockbackForce, ForceMode.Impulse);
             gameManager.TakeDamageOnPlayer((int)zombieData.meleDamage);
+            isHittingMelee = false;
         }
     }
  

@@ -19,4 +19,5 @@ MonoBehaviour:
   distanceToChase: 15
   meleeRange: 0.5
   reloadTime: 15
-  meleDamage: 1
+  meleDamage: 25
+  knockbackForce: 8

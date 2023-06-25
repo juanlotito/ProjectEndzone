@@ -8,8 +8,13 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private FemaleZombieAController femaleAZombiePrefab;
     [SerializeField] private MaleZombieAController maleAZombiePrefab;
     [SerializeField] private LevelData levelData;
-    private float spawnTimer = 0f; 
+    public bool isEnabled;
+    private float spawnTimer = 0f;
 
+    private void Awake()
+    {
+        isEnabled = false;
+    }
     private void Update()
     {
         spawnTimer += Time.deltaTime;
@@ -23,29 +28,38 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnZombies()
     {
-        var currentZombies = GameManager.instance.currentZombies;
-
-        if (currentZombies >= levelData.maxZombies)
+        if (isEnabled)
         {
-            return;
+            var currentZombies = GameManager.instance.currentZombies;
+
+            if (currentZombies >= levelData.maxZombies)
+            {
+                return;
+            }
+
+            int spawnIndex = Random.Range(0, spawnPoints.Length);
+            Transform spawnPointChosen = spawnPoints[spawnIndex].transform;
+
+            int randomZombieType = Random.Range(0, 2); // 0 para ZombieMale, 1 para ZombieFemale (POR AHORA; TODO: MAS ZOMBIES)
+
+            ZombieController zombieInstance;
+
+            if (randomZombieType == 0)
+            {
+                zombieInstance = Instantiate(maleAZombiePrefab, spawnPointChosen.position, spawnPointChosen.rotation);
+            }
+            else
+            {
+                zombieInstance = Instantiate(femaleAZombiePrefab, spawnPointChosen.position, spawnPointChosen.rotation);
+            }
+
+            GameManager.instance.AddZombie();
         }
+        
+    }
 
-        int spawnIndex = Random.Range(0, spawnPoints.Length);
-        Transform spawnPointChosen = spawnPoints[spawnIndex].transform;
-
-        int randomZombieType = Random.Range(0, 2); // 0 para ZombieMale, 1 para ZombieFemale (POR AHORA; TODO: MAS ZOMBIES)
-
-        ZombieController zombieInstance;
-
-        if (randomZombieType == 0)
-        {
-            zombieInstance = Instantiate(maleAZombiePrefab, spawnPointChosen.position, spawnPointChosen.rotation);
-        }
-        else
-        {
-            zombieInstance = Instantiate(femaleAZombiePrefab, spawnPointChosen.position, spawnPointChosen.rotation);
-        }
-
-        GameManager.instance.AddZombie();
+    public void SetEnabledSpawn(bool enabled)
+    {
+        this.isEnabled = enabled;
     }
 }
