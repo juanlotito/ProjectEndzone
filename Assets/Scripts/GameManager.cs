@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
 
     public void CheckWin()
     {
-        if(totalKills >= 1)
+        if(totalKills >= 20)
         {
             this.player.SetPlayerCanMove(false);
             lienzo.SetActive(true);

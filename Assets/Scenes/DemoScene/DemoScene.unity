@@ -14664,7 +14664,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: "El juego es simple: Tienes que intentar sobrevivir el mayor tiempo posible.
     Para esta demo, el juego spawnear\xE1 zombies en posiciones aleatorias con un
-    m\xE1ximo de 7 Zombies en simult\xE1neo.\r\nUna vez hayas llegado a las 50 Kills
+    m\xE1ximo de 7 Zombies en simult\xE1neo.\r\nUna vez hayas llegado a las 20 Kills
     habr\xE1s ganado el juego.\r\n\r\nControles: \r\n - WASD: Movimiento\r\n - Shift:
     Sprint\r\n - Click Izquierdo: Ataque Melee\r\n\r\nTendr\xE1s a disposici\xF3n
     algunos Health Packs para curarte en el mapa, tambi\xE9n algunos power ups escondidos
